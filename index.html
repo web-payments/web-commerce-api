@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Browser Payments 1.0</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<script type="text/javascript" src="respec-w3c-common-3.1.54.js" class="remove"></script>
+<script type="text/javascript" class="remove">
+//<![CDATA[
+  var respecConfig = {
+      doRDFa: "1.1",
+      // specification status (e.g. WD, LCWD, NOTE, etc.). If in doubt use ED.
+      specStatus:           "CG-DRAFT",
+      // if you wish the publication date to be other than today, set this
+      //publishDate:          "2013-04-04",
+      //copyrightStart:       "2010",
+
+      // the specification's short name, as in http://www.w3.org/TR/short-name/
+      shortName:            "browser-payments",
+      subtitle:             "Initiating payments from within the browser",
+
+      // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+      // and its maturity status
+      //previousPublishDate:  "2012-07-12",
+      //previousMaturity:     "WD",
+      //previousDiffURI:      "http://www.w3.org/TR/2013/",
+
+      // if there a publicly available Editor's Draft, this is the link
+      //edDraftURI:           "",
+
+      // if this is a LCWD, uncomment and set the end of its review period
+      //lcEnd: "2013-05-04",
+
+      issueBase: "https://github.com/web-payments/browser-payments/issues/",
+
+      // if you want to have extra CSS, append them to this list
+      // it is recommended that the respec.css stylesheet be kept
+      // extraCSS:             [],
+
+      // editors, add as many as you like
+      // only "name" is required
+      editors:  [
+          { name: "Manu Sporny", url: "http://manu.sporny.org/",
+            company: "Digital Bazaar", companyURL: "http://digitalbazaar.com/" },
+          { name: "Kumar McMillan", url: "http://farmdev.com/",
+            company: "Mozilla", companyURL: "http://www.mozilla.org/" }
+      ],
+
+      // authors, add as many as you like.
+      // This is optional, uncomment if you have authors as well as editors.
+      // only "name" is required. Same format as editors.
+      authors:  [
+          { name: "Andreas Gal", url: "http://andreasgal.com/",
+            company: "Mozilla", companyURL: "http://www.mozilla.org/" },
+          { name: "Fernando Jiménez", url: "https://github.com/ferjm",
+            company: "Telefónica Digital", 
+            companyURL: "http://www.telefonica.com/en/digital/html/home/" },
+          { name: "Mike Hanson", url: "http://www.open-mike.org/",
+            company: "Mozilla", companyURL: "http://www.mozilla.org/" },
+          { name: "Kumar McMillan", url: "http://farmdev.com/",
+            company: "Mozilla", companyURL: "http://www.mozilla.org/" }
+      ],
+
+      // name of the WG
+      wg:           "Web Payments Community Group",
+
+      // URI of the public WG page
+      wgURI:        "http://www.w3.org/community/webpayments/",
+
+      // name (with the @w3c.org) of the public mailing to which comments are due
+      wgPublicList: "public-webpayments",
+
+      // URI of the patent status for this WG, for Rec-track documents
+      // !!!! IMPORTANT !!!!
+      // This is important for Rec-track documents, do not copy a patent URI from a random
+      // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
+      // Team Contact.
+      //wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/46168/status",
+      maxTocLevel: 2
+      //alternateFormats: [ {uri: "diff-20120712.html", label: "diff to previous version"} ]
+  };
+//]]>
+</script>
+<style type="text/css">
+  .diff { font-weight:bold; color:#0a3; }
+  table, thead, tr, td { padding: 5px; border-width: 1px; border-spacing: 0px; border-style: solid; border-collapse: collapse;}
+</style>
+</head>
+
+<body>
+<section id="abstract">
+  <p></p>
+</section>
+
+<section id="sotd">
+
+  <p>There are a number of ways that one may participate in the development of
+    this specification:</p>
+
+  <ul>
+    <li>Ad-hoc technical discussion primarily occurs on the public community mailing list:
+      <a href="http://lists.w3.org/Archives/Public/public-webpayments/">public-webpayments@w3.org</a></li>
+
+    <li><a href="http://payswarm/minutes/">Public Web Payments Community Group teleconferences</a>
+    are held on Wednesdays at 1600UTC every other week.</li>
+
+    <li>Specification bugs and issues should be reported in the
+      <a href="https://github.com/web-payments/browser-payments/issues">issue tracker</a>
+      if you do not want to send an e-mail to the public-webpayments mailing
+      list.</li>
+
+    <li><a href="https://github.com/web-payments/browser-payments/tree/master/">Source code</a>
+      for the specification can be found on Github.</li>
+
+    <li>The <a href="http://webchat.freenode.net/?channels=payswarm">#payswarm</a>
+      IRC channel is available for real-time discussion on irc.freenode.net.</li>
+  </ul>
+</section>
+
+<section class="informative">
+  <h1>Introduction</h1>
+
+
+  <section class="informative">
+    <h2>How to Read this Document</h2>
+
+    <p>This document is a detailed specification for an application programming
+      interface (API) for initiating payments from within a browser 
+      environment. The document is primarily intended for the following 
+      audiences:</p>
+
+    <ul>
+      <li>Software developers who want to understand the design decisions and
+        algorithms behind the API.</li>
+      <li>Software developers who want to implement the API.</li>
+    </ul>
+
+  </section>
+</section>
+
+<section class="appendix informative">
+  <h2>Acknowledgements</h2>
+
+  <p>The authors would like to thank ...
+
+  <p>Thanks to the following individuals, in order of their first name, for
+    their input on the specification: ...</p>
+</section>
+
+</body>
+</html>
