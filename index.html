@@ -259,7 +259,7 @@ The <code>navigator.payment()</code> API does not prescribe any user
 authorization scheme.
       </p>
       <p class="issue">
-Figure out a way to reference <a href="https://login.persona.org/">Persona</a>.
+Specific user identity management, e.g. <a href="https://login.persona.org/">Persona</a>.
       </p>
     </section>
 
@@ -362,7 +362,7 @@ be processed.
             <dt>pricePoint (mandatory)</dt>
             <dd>
 An identifier that corresponds to a price according to the Payment Provider.
-For example, pricePoint 1 might translate into €0.89 when the buyer is in
+For example, pricePoint 1 might translate into €0,89 when the buyer is in
 Europe or $0.99 when in the US, etc. The exact price point values are
 managed by the Payment Provider and they may change based on currency
 exchange rates.
@@ -429,7 +429,8 @@ request.onerror = function (errorMsg) {
         <li>
 The <code>navigator.payment</code> method will open a payment request
 confirmation screen based on the received JWTs, so the user can confirm and
-choose the payment method that is more appropriate for him. B2G would only
+choose the payment method that is more appropriate for him.
+The User Agent would only
 show the payment providers for the JWT <strong>typ</strong> values that are
 pre-registered in the User Agent. JWTs containing a <strong>typ</strong>
 value not registered in the UA would be considered as invalid.
@@ -438,7 +439,7 @@ value not registered in the UA would be considered as invalid.
 Once the user selects a Payment Provider the UA will open a special window
 (a "chrome" dialog) containing the Payment Provider's buy flow that is
 registered in the User Agent for the <strong>typ</strong> value of the
-passed JWT (e.g. Firefox Marketplace in the example above).
+passed JWT.
         </li>
         <li>
 Why an array of JWTs? The Developer will have a specific contract with
@@ -446,7 +447,7 @@ each Payment Provider and will have a unique Application Secret for each
 provider. When a payment is initiated, the Application must send all JWTs.
 The user will select only one Payment Provider to complete the purchase. If
 there is only one JWT to choose from, the user will automatically use that
-Payment Provider, and this is the case for the first version of B2G.
+Payment Provider.
         </li>
         <li>
 The details of the exact buy flow are implemented by the
@@ -471,8 +472,7 @@ The Application must only rely on server side notifications to determine the
 outcome of a purchase. The Payment Provider will POST a confirmation message
 (a JWT) to the <strong>postbackURL</strong> (on success) or the
 <strong>chargebackURL</strong> (on error). The Application provides these
-URLs in the original JWT request. On a production server, these URLs must
-be HTTPS.
+URLs in the original JWT request.
       </p>
       <p>
 The POST request will have a content-type of
