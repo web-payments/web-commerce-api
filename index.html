@@ -10,7 +10,7 @@
   var respecConfig = {
       // extend the bibliography entries
       localBiblio: localBibliography,
-      
+
       // pre-process the text to build term reference links
       preProcess: [ preProc ],
 
@@ -59,7 +59,7 @@
           { name: "Andreas Gal", url: "http://andreasgal.com/",
             company: "Mozilla", companyURL: "http://www.mozilla.org/" },
           { name: "Fernando Jiménez", url: "https://github.com/ferjm",
-            company: "Telefónica Digital", 
+            company: "Telefónica Digital",
             companyURL: "http://www.telefonica.com/en/digital/html/home/" },
           { name: "Mike Hanson", url: "http://www.open-mike.org/",
             company: "Mozilla", companyURL: "http://www.mozilla.org/" },
@@ -127,7 +127,7 @@
   <h1>Introduction</h1>
 
   <p>
-This API enables Web content to initiate payment or issue a refund for a 
+This API enables Web content to initiate payment or issue a refund for a
 product or service. Once implemented in the browser, an author may issue
 <code>navigator.payment()</code> function to initiate a payment.
   </p>
@@ -135,8 +135,8 @@ product or service. Once implemented in the browser, an author may issue
     <h2>How to Read this Document</h2>
 
     <p>This document is a detailed specification for an application programming
-      interface (API) for initiating payments from within a browser 
-      environment. The document is primarily intended for the following 
+      interface (API) for initiating payments from within a browser
+      environment. The document is primarily intended for the following
       audiences:</p>
 
     <ul>
@@ -151,73 +151,73 @@ product or service. Once implemented in the browser, an author may issue
 <section>
  <h1>WebPayments Architecture</h1>
  <p>
-An open web app will interact with a 
-<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a> 
-via <code>navigator.payment()</code> and receive notifications POSTed to its 
-server about the result of each payment. Users will see a payment flow hosted 
+An open web app will interact with a
+<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>
+via <code>navigator.payment()</code> and receive notifications POSTed to its
+server about the result of each payment. Users will see a payment flow hosted
 by the Payment Provider in a special window on the device.
  </p>
- 
+
   <section>
     <h2>Payment Flow Overview</h2>
     <ul>
       <li>
-The app initiates a payment by signing a JSON Web Token [[!JWT]] request 
+The app initiates a payment by signing a JSON Web Token [[!JWT]] request
 and calling <code>navigator.payment()</code>.
       </li>
       <li>
-This starts the buyflow in a content iframe inside a trusted dialog 
+This starts the buyflow in a content iframe inside a trusted dialog
 ("chrome dialog").
       </li>
       <li>
-A purchasing flow is served from the 
-<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>'s 
+A purchasing flow is served from the
+<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>'s
 server as an HTML5 document inside the trusted dialog.
       </li>
       <li>
-The buyer is authenticated by the 
-<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a> 
-(via the network, Mozilla Persona assertion or whatever authentication 
+The buyer is authenticated by the
+<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>
+(via the network, Mozilla Persona assertion or whatever authentication
 mechanisms the Payment Provider chooses).
       </li>
       <li>
 The buyer completes or cancels the purchase.
       </li>
       <li>
-The app receives a Javascript callback when the buyer completes or cancels 
+The app receives a Javascript callback when the buyer completes or cancels
 the purchase.
       </li>
       <li>
-The app server receives a signed POST request with a Payment Provider 
-transaction identifier indicating that the purchase was completed 
+The app server receives a signed POST request with a Payment Provider
+transaction identifier indicating that the purchase was completed
 successfully (or it failed).
       </li>
     </ul>
   </section>
-  
+
   <section>
     <h2>Detailed Payment Flow</h2>
 <p class="issue">
- Describe high-level payment flow, which is based on Mozilla's 
+ Describe high-level payment flow, which is based on Mozilla's
  <a href="https://developer.mozilla.org/en-US/docs/Apps/Publishing/In-app_payments">initial implementation for Firefox OS</a>.
 </p>
     <section>
       <h3>Definitions</h3>
       <dl>
         <dt><tdef>Application</tdef></dt>
-        <dd> 
-Open Web App which offers digital goods to be sold. OWAs charge users 
+        <dd>
+Open Web App which offers digital goods to be sold. OWAs charge users
 via <code>navigator.payment()</code> and require a client and server.
         </dd>
         <dt><tdef>Application Key</tdef></dt>
         <dd>
-A public identifier that can be transmitted in a JSON object so that a Payment 
+A public identifier that can be transmitted in a JSON object so that a Payment
 Provider can identify the Application.
-        </dd> 
+        </dd>
         <dt><tdef>Application Secret</tdef></dt>
         <dd>
-A private string shared between Developer and Payment Provider. This will be 
-used to sign JSON Web Tokens [[!JWT]] and must be securely protected on a 
+A private string shared between Developer and Payment Provider. This will be
+used to sign JSON Web Tokens [[!JWT]] and must be securely protected on a
 web server.
         </dd>
         <dt><tdef>Developer</tdef></dt>
@@ -226,17 +226,17 @@ Application developer, seller of digital goods.
         </dd>
         <dt><tdef>Marketplace</tdef></dt>
         <dd>
-Developer portal and application repository. Developers can submit apps to 
-the Marketplace so users can purchase and download the apps. The Marketplace 
-uses the <code>navigator.payment()</code> function to charge users for 
+Developer portal and application repository. Developers can submit apps to
+the Marketplace so users can purchase and download the apps. The Marketplace
+uses the <code>navigator.payment()</code> function to charge users for
 application purchases.
         </dd>
         <dt><tdef>Payment Provider</tdef></dt>
         <dd>
-A client/server web application that serves content in a special iframe 
-controlled by <code>navigator.payment()</code>. This conforms to 
-the 
-<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a> 
+A client/server web application that serves content in a special iframe
+controlled by <code>navigator.payment()</code>. This conforms to
+the
+<a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>
 spec. The provider accepts payment from a user and disperses income to the Developer.
         </dd>
         <dt><tdef>User</tdef></dt>
@@ -250,62 +250,62 @@ phone operating system, or similar software system.
         </dd>
       </dl>
     </section>
-    
+
     <section>
       <h3>Sign-in</h3>
       <p>
-This is an implementation detail of the <tref>Payment Provider</tref>. 
-The <code>navigator.payment()</code> API does not prescribe any user 
-authorization scheme. 
+This is an implementation detail of the <tref>Payment Provider</tref>.
+The <code>navigator.payment()</code> API does not prescribe any user
+authorization scheme.
       </p>
       <p class="issue">
 Figure out a way to reference <a href="https://login.persona.org/">Persona</a>.
       </p>
     </section>
-    
+
     <section>
       <h3>Developer Registration</h3>
       <p>
-This is an implementation detail of the <tref>Payment Provider</tref>. 
+This is an implementation detail of the <tref>Payment Provider</tref>.
 The <code>navigator.payment()</code> API facilities two parties in making a
-transaction: 1) a Developer and 2) a Payment Provider.  It does not 
+transaction: 1) a Developer and 2) a Payment Provider.  It does not
 facilitate any part of the registration process.
       </p>
       <p>
-A developer who creates a JSON Web Token [[!JWT]] must do so with an 
-<tref>Application Secret</tref> obtained from the 
-<tref>Payment Provider</tref>. 
+A developer who creates a JSON Web Token [[!JWT]] must do so with an
+<tref>Application Secret</tref> obtained from the
+<tref>Payment Provider</tref>.
       </p>
       <p class="issue">
-In <a href="https://developer.mozilla.org/en-US/docs/Apps/Publishing/In-app_payments">Mozilla's implementation</a>, 
-a developer signs up through the <a href="https://marketplace.firefox.com/developers/">Firefox Marketplace Developer Hub</a>, 
-enters bank account details for payouts, obtains an 
-<tref>Application Key</tref> and <tref>Application Secret</tref>, and can 
+In <a href="https://developer.mozilla.org/en-US/docs/Apps/Publishing/In-app_payments">Mozilla's implementation</a>,
+a developer signs up through the <a href="https://marketplace.firefox.com/developers/">Firefox Marketplace Developer Hub</a>,
+enters bank account details for payouts, obtains an
+<tref>Application Key</tref> and <tref>Application Secret</tref>, and can
 begin signing JWTs for purchase.
       </p>
     </section>
-    
+
     <section>
       <h3>Initiating a Payment</h3>
       <ol>
         <li>
 The <tref>User</tref> opens an <tref>Application</tref>.</li>
         <li>
-The user finds something interesting to purchase. Let's say it's a game and 
+The user finds something interesting to purchase. Let's say it's a game and
 the user wants to purchase a Magical Unicorn to excel in the game.
         </li>
         <li>
 The user clicks a <strong>Buy Unicorn</strong> button.
         </li>
         <li>
-The <tref>Application</tref> server responds by first signing a 
-JSON Web Token [[!JWT]] using its <tref>Application Secret</tref>. 
-The JWT is a base64-encoded signed JSON object. The JSON contains all the 
+The <tref>Application</tref> server responds by first signing a
+JSON Web Token [[!JWT]] using its <tref>Application Secret</tref>.
+The JWT is a base64-encoded signed JSON object. The JSON contains all the
 details about the product such as name, description, price, etc.
         </li>
         <li>
-The <tref>Application</tref> bubbles up the JWT to the client and calls 
-<code>navigator.payment([theJWT])</code>. This begins the hosted buy flow 
+The <tref>Application</tref> bubbles up the JWT to the client and calls
+<code>navigator.payment([theJWT])</code>. This begins the hosted buy flow
 within a special window on the <tref>User Agent</tref>.
         </li>
       </ol>
@@ -333,14 +333,14 @@ Here is a detailed explanation of the payment JWT:
       <dl>
         <dt>iss (mandatory)</dt>
         <dd>
-The issuer of the JWT. This is the Application Key assigned 
-during the app registration process for this specific payment provider 
+The issuer of the JWT. This is the Application Key assigned
+during the app registration process for this specific payment provider
 (e.g. Marketplace).
         </dd>
         <dt>typ (mandatory)</dt>
         <dd>
-The JWT type. This identifies the payment provider, e.g. 
-Marketplace, and the JWT version that must be supported by the provider. 
+The JWT type. This identifies the payment provider, e.g.
+Marketplace, and the JWT version that must be supported by the provider.
 On the User Agent, typ is used to look up white-listed Payment Providers.
         </dd>
         <dt>iat (mandatory)</dt>
@@ -348,19 +348,23 @@ On the User Agent, typ is used to look up white-listed Payment Providers.
 Issued at time. This is a UTC Unix timestamp of when the JWT was issued.
         </dd>
         <dt>exp (mandatory)</dt>
+        <dd>
 Expiration. A UTC Unix timestamp of when the JWT should expire.
+        </dd>
         <dt>nbf (optional)</dt>
-Not-before time. A UTC Unix timestamp of the earliest time the JWT can 
+        <dd>
+Not-before time. A UTC Unix timestamp of the earliest time the JWT can
 be processed.
+        </dd>
         <dt>request (mandatory)</dt>
         <dd>
           <dl>
             <dt>pricePoint (mandatory)</dt>
             <dd>
-An identifier that corresponds to a price according to the Payment Provider. 
-For example, pricePoint 1 might translate into €0.89 when the buyer is in 
-Europe or $0.99 when in the US, etc. The exact price point values are 
-managed by the Payment Provider and they may change based on currency 
+An identifier that corresponds to a price according to the Payment Provider.
+For example, pricePoint 1 might translate into €0.89 when the buyer is in
+Europe or $0.99 when in the US, etc. The exact price point values are
+managed by the Payment Provider and they may change based on currency
 exchange rates.
             <dt>name (mandatory)</dt>
             <dd>
@@ -373,41 +377,41 @@ A long description of the product.
             <dt>id (mandatory)</dt>
             <dd>
 A unique identifier for the product you are selling. This only needs
-to be unique within your own catalog, not unique among all products from all 
+to be unique within your own catalog, not unique among all products from all
 apps.
             </dd>
             <dt>productData (optional)</dt>
             <dd>
-A freeform string, no longer than 255 characters. This can be 
-anything the app might need to identify the product with when a postback 
+A freeform string, no longer than 255 characters. This can be
+anything the app might need to identify the product with when a postback
 is sent back to the app.
             </dd>
             <dt>postbackURL (mandatory)</dt>
             <dd>
-URL where the payment processor sends an HTTP POST message to 
-whenever a purchase completes. The application server needs to acknowledge 
+URL where the payment processor sends an HTTP POST message to
+whenever a purchase completes. The application server needs to acknowledge
 these POST messages, or else the transactions will be canceled.
             </dd>
             <dt>chargebackURL (mandatory)</dt>
             <dd>
-URL where the payment processor sends an HTTP POST message to 
+URL where the payment processor sends an HTTP POST message to
 whenever a refund associated with this transaction is done.
             </dd>
           </dl>
         </dd>
       </dl>
-      
+
       <p>
-For a user to make a purchase, the Application must execute the Javascript 
-method <code>navigator.payment()</code> with one or more signed payment 
-requests (the JWTs). For example, the app might have a 'buy' button that 
-triggers this method when clicked. Then <code>navigator.payment()</code> method 
-should take the signed payment JWT or an array of them. It will return a 
-<a href="https://developer.mozilla.org/en/DOM/DOMRequest">DOMRequest</a> object 
+For a user to make a purchase, the Application must execute the Javascript
+method <code>navigator.payment()</code> with one or more signed payment
+requests (the JWTs). For example, the app might have a 'buy' button that
+triggers this method when clicked. Then <code>navigator.payment()</code> method
+should take the signed payment JWT or an array of them. It will return a
+<a href="https://developer.mozilla.org/en/DOM/DOMRequest">DOMRequest</a> object
 that the developer can use to monitor the progress of the operation.
       </p>
 
-      <pre class="example" title="Initiating a payment via the navigator.payment() method"> 
+      <pre class="example" title="Initiating a payment via the navigator.payment() method">
 var request = navigator.payment([signedJWT1, signedJWTn]);
 
 request.onsuccess = function () {
@@ -423,82 +427,82 @@ request.onerror = function (errorMsg) {
 
       <ol>
         <li>
-The <code>navigator.payment</code> method will open a payment request 
-confirmation screen based on the received JWTs, so the user can confirm and 
-choose the payment method that is more appropriate for him. B2G would only 
-show the payment providers for the JWT <strong>typ</strong> values that are 
-pre-registered in the User Agent. JWTs containing a <strong>typ</strong> 
+The <code>navigator.payment</code> method will open a payment request
+confirmation screen based on the received JWTs, so the user can confirm and
+choose the payment method that is more appropriate for him. B2G would only
+show the payment providers for the JWT <strong>typ</strong> values that are
+pre-registered in the User Agent. JWTs containing a <strong>typ</strong>
 value not registered in the UA would be considered as invalid.
         </li>
-        <li> 
-Once the user selects a Payment Provider the UA will open a special window 
-(a "chrome" dialog) containing the Payment Provider's buy flow that is 
-registered in the User Agent for the <strong>typ</strong> value of the 
+        <li>
+Once the user selects a Payment Provider the UA will open a special window
+(a "chrome" dialog) containing the Payment Provider's buy flow that is
+registered in the User Agent for the <strong>typ</strong> value of the
 passed JWT (e.g. Firefox Marketplace in the example above).
         </li>
-        <li> 
-Why an array of JWTs? The Developer will have a specific contract with 
-each Payment Provider and will have a unique Application Secret for each 
-provider. When a payment is initiated, the Application must send all JWTs. 
-The user will select only one Payment Provider to complete the purchase. If 
-there is only one JWT to choose from, the user will automatically use that 
+        <li>
+Why an array of JWTs? The Developer will have a specific contract with
+each Payment Provider and will have a unique Application Secret for each
+provider. When a payment is initiated, the Application must send all JWTs.
+The user will select only one Payment Provider to complete the purchase. If
+there is only one JWT to choose from, the user will automatically use that
 Payment Provider, and this is the case for the first version of B2G.
         </li>
-        <li> 
-The details of the exact buy flow are implemented by the 
-<tref>Payment Provider</tref>. In Mozilla's pay flow, the user logs in via 
-Persona, enters a PIN, and is presented with details about the item to be 
+        <li>
+The details of the exact buy flow are implemented by the
+<tref>Payment Provider</tref>. In Mozilla's pay flow, the user logs in via
+Persona, enters a PIN, and is presented with details about the item to be
 purchased.
         </li>
-        <li> 
+        <li>
 The user confirms the purchase or cancels it.
         </li>
-        <li> 
-If the user cancels or something goes wrong with the payment process, the 
+        <li>
+If the user cancels or something goes wrong with the payment process, the
 flow returns to the <code>DOMRequest.onerror</code> callback.
         </li>
       </ol>
     </section>
-    
+
     <section>
       <h3>Notifications</h3>
       <p>
-The Application must only rely on server side notifications to determine the 
-outcome of a purchase. The Payment Provider will POST a confirmation message 
-(a JWT) to the <strong>postbackURL</strong> (on success) or the 
-<strong>chargebackURL</strong> (on error). The Application provides these 
-URLs in the original JWT request. On a production server, these URLs must 
-be HTTPS. 
+The Application must only rely on server side notifications to determine the
+outcome of a purchase. The Payment Provider will POST a confirmation message
+(a JWT) to the <strong>postbackURL</strong> (on success) or the
+<strong>chargebackURL</strong> (on error). The Application provides these
+URLs in the original JWT request. On a production server, these URLs must
+be HTTPS.
       </p>
       <p>
-The POST request will have a content-type of 
-<code>application/x-www-form-urlencoded</code> and the JWT will be in the 
-<strong>notice</strong> form parameter. This JWT contains a copy of the 
-original payment request plus a new response object that has a 
-<strong>transactionID</strong> which identifies the Payment Provider's 
+The POST request will have a content-type of
+<code>application/x-www-form-urlencoded</code> and the JWT will be in the
+<strong>notice</strong> form parameter. This JWT contains a copy of the
+original payment request plus a new response object that has a
+<strong>transactionID</strong> which identifies the Payment Provider's
 transaction.
       </p>
       <p>
-When a JWT is received, the Application first needs to verify the signature 
-using its Application Secret. If the signature is not valid, it probably was 
-not sent from the Payment Provider and should be ignored. If the signtature 
-is valid, then the application server should decode the JWT, record it, and 
-<strong>respond with a 200 OK that contains the transactionID in plain 
-text</strong>. If the Application server responds with an error status or 
-does not respond with the right transactionID, the Payment Provider will 
-consider this a failure. It will retry and/or notify the Developer about the 
-failure. The Application must respond to the request in plain text containing 
+When a JWT is received, the Application first needs to verify the signature
+using its Application Secret. If the signature is not valid, it probably was
+not sent from the Payment Provider and should be ignored. If the signtature
+is valid, then the application server should decode the JWT, record it, and
+<strong>respond with a 200 OK that contains the transactionID in plain
+text</strong>. If the Application server responds with an error status or
+does not respond with the right transactionID, the Payment Provider will
+consider this a failure. It will retry and/or notify the Developer about the
+failure. The Application must respond to the request in plain text containing
 just the <strong>transactionID</strong> value.
       </p>
-      
+
       <section>
         <h4>Postback</h4>
         <p>
-Here is an example of a JWT POSTed via the <strong>notice</strong> parameter 
-to <strong>postbackURL</strong> that indicates a transaction was fully 
+Here is an example of a JWT POSTed via the <strong>notice</strong> parameter
+to <strong>postbackURL</strong> that indicates a transaction was fully
 processed and was successful:
         </p>
-        <pre class="example" title="Postback example"> 
+        <pre class="example" title="Postback example">
 {
    "iss": "marketplace.firefox.com",
    "aud": APPLICATION_KEY,
@@ -524,18 +528,18 @@ processed and was successful:
         <pre class="example" title="HTTP Response for postback example">
 HTTP/1.1 200 OK
 Content-Type: text/plain
- 
+
 webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
         </pre>
       </section>
       <section>
         <h4>Chargeback</h4>
         <p>
-Here is an example of a JWT POSTed via the <strong>notice</strong> parameter 
+Here is an example of a JWT POSTed via the <strong>notice</strong> parameter
 to <strong>chargebackURL</strong> that indicates a transaction was fully
 processed but was unsuccessful:
         </p>
-        <pre class="example" title="Chargeback example"> 
+        <pre class="example" title="Chargeback example">
 {
   "iss": "marketplace.firefox.com",
   "aud": APPLICATION_KEY,
@@ -557,43 +561,43 @@ processed but was unsuccessful:
   }
 }
         </pre>
-        
+
         <p>
-A chargeback JWT might be received instead of or in addition to a postback. 
+A chargeback JWT might be received instead of or in addition to a postback.
 The response will contain a <strong>reason</strong> attribute, as follows:
         </p>
-        
+
         <dl>
           <dt>refund</dt>
-          <dd> 
-The payment was refunded either upon request of the customer or by an 
+          <dd>
+The payment was refunded either upon request of the customer or by an
 administrator.
           </dd>
           <dt>reversal</dt>
           <dd>
-A buyer has asked the credit card issuer to reverse a transaction after it 
-has been completed. The buyer might do this through the credit card company 
+A buyer has asked the credit card issuer to reverse a transaction after it
+has been completed. The buyer might do this through the credit card company
 as part of a dispute.
           </dd>
         </dl>
-        
+
         <p>
 Here is an example response that includes just the transactionID:
         </p>
-        
+
         <pre class="example" title="HTTP response for chargeback example">
 HTTP/1.1 200 OK
 Content-Type: text/plain
- 
+
 webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
         </pre>
       </section>
-    
+
       <section>
         <h4>Refunds</h4>
         <p>
-Refunds are not yet supported by the <code>navigator.payment()</code> API. 
-<strong>At a future date, an Application may be able to request a refund 
+Refunds are not yet supported by the <code>navigator.payment()</code> API.
+<strong>At a future date, an Application may be able to request a refund
 like this</strong>:
         </p>
         <pre class="example" title="Refund example">
@@ -622,8 +626,8 @@ This would initiate a refund flow and POST a confirmation JWT when completed.
   <h1>Payment Provider facing API</h1>
   <p class="issue">
 Figure out how to reference the
-<a href="/WebAPI/WebPaymentProvider" title="WebAPI/WebPaymentProvider">WebPaymentProvider</a> 
-spec for details on how to implement a payment provider for 
+<a href="/WebAPI/WebPaymentProvider" title="WebAPI/WebPaymentProvider">WebPaymentProvider</a>
+spec for details on how to implement a payment provider for
 <code>navigator.payment()</code>. It may be that we need to fold that into this
 spec.
   </p>
@@ -646,12 +650,12 @@ spec.
     <dl title="interface NavigatorPayment" class="idl">
       <dt>DOMRequest payment()</dt>
       <dd>
-        Initiates a payment or refund given an array of JSON Web Tokens [[!JWT]] 
+        Initiates a payment or refund given an array of JSON Web Tokens [[!JWT]]
         describing the types of actions to perform.
 
         <dl class="parameters">
           <dt>object[] requests</dt>
-          <dd>An array of JSON Web Tokens [[!JWT]] describing the type 
+          <dd>An array of JSON Web Tokens [[!JWT]] describing the type
           of payment operations to perform.</dd>
         </dl>
       </dd>
