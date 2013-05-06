@@ -348,19 +348,23 @@ On the User Agent, typ is used to look up white-listed Payment Providers.
 Issued at time. This is a UTC Unix timestamp of when the JWT was issued.
         </dd>
         <dt>exp (mandatory)</dt>
+        <dd>
 Expiration. A UTC Unix timestamp of when the JWT should expire.
+        </dd>
         <dt>nbf (optional)</dt>
-Not-before time. A UTC Unix timestamp of the earliest time the JWT can 
+        <dd>
+Not-before time. A UTC Unix timestamp of the earliest time the JWT can
 be processed.
+        </dd>
         <dt>request (mandatory)</dt>
         <dd>
           <dl>
             <dt>pricePoint (mandatory)</dt>
             <dd>
-An identifier that corresponds to a price according to the Payment Provider. 
-For example, pricePoint 1 might translate into €0.89 when the buyer is in 
-Europe or $0.99 when in the US, etc. The exact price point values are 
-managed by the Payment Provider and they may change based on currency 
+An identifier that corresponds to a price according to the Payment Provider.
+For example, pricePoint 1 might translate into €0.89 when the buyer is in
+Europe or $0.99 when in the US, etc. The exact price point values are
+managed by the Payment Provider and they may change based on currency
 exchange rates.
             <dt>name (mandatory)</dt>
             <dd>
