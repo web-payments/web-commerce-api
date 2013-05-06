@@ -82,7 +82,7 @@
       // document unless you know what you're doing. If in doubt ask your friendly neighbourhood
       // Team Contact.
       //wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/46168/status",
-      maxTocLevel: 2
+      maxTocLevel: 4
       //alternateFormats: [ {uri: "diff-20120712.html", label: "diff to previous version"} ]
   };
 //]]>
@@ -129,7 +129,7 @@
   <p>
 This API enables Web content to initiate payment or issue a refund for a 
 product or service. Once implemented in the browser, an author may issue
-<code>navigator.pay()</code> function to initiate a payment.
+<code>navigator.payment()</code> function to initiate a payment.
   </p>
   <section class="informative">
     <h2>How to Read this Document</h2>
@@ -309,11 +309,8 @@ The <tref>Application</tref> bubbles up the JWT to the client and calls
 within a special window on the <tref>User Agent</tref>.
         </li>
       </ol>
-      <p>
-Example of server-side JWT generation in Python using 
-<a href="https://pypi.python.org/pypi/PyJWT-mozilla">PyJWT-mozilla</a>:
-      </p>
-      <pre class="example">paymentJWT = jwt.encode({
+      <pre class="example" title="Server-side JWT generation in Python">
+paymentJWT = jwt.encode({
    "iss": APPLICATION_KEY,
    "aud": "marketplace.firefox.com",
    "typ": "mozilla/payments/pay/v1",
@@ -400,35 +397,109 @@ whenever a refund associated with this transaction is done.
         </dd>
       </dl>
       
-<ul><li> For a user to make a purchase, the Application must execute the Javascript method <code>navigator.mozPay()</code> with one or more signed payment requests (the JWTs). For example, the app might have a 'buy' button that triggers this method when clicked. Then <code>navigator.mozPay</code> method should take the signed payment JWT or an array of them. It will return a <a href="https://developer.mozilla.org/en/DOM/DOMRequest">DOMRequest</a> object that the developer can use to monitor the progress of the operation.
-</li></ul>
-<pre class="example"> var request = navigator.mozPay([signedJWT1, signedJWTn]);
- request.onsuccess = function () {
-   // The payment buy flow completed without errors.
-   // This does NOT mean the payment was successful.
-   waitForServerPostback();
- }
- request.onerror = function (errorMsg) {
-   console.log('navigator.mozPay() error: ' + this.error.name + ': ' + errorMsg);
- }
-</pre>
-<ul><li> The <code>navigator.mozPay</code> method will open a payment request confirmation screen based on the received JWTs, so the user can confirm and choose the payment method that is more appropriate for him. B2G would only show the payment providers for the JWT <strong>typ</strong> values that are pre-registered in the User Agent. JWTs containing a <strong>typ</strong> value not registered in the UA would be considered as invalid.
-</li><li> Once the user selects a Payment Provider the UA will open a special window (a "chrome" dialog) containing the Payment Provider's buy flow that is registered in the User Agent for the <strong>typ</strong> value of the passed JWT (e.g. Firefox Marketplace in the example above).
-</li><li> Why an array of JWTs? The Developer will have a specific contract with each Payment Provider and will have a unique Application Secret for each provider. When a payment is initiated, the Application must send all JWTs. The user will select only one Payment Provider to complete the purchase. If there is only one JWT to choose from, the user will automatically use that Payment Provider, and this is the case for the first version of B2G.
-</li><li> The details of the exact buy flow are implemented by the <a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>. In Mozilla's pay flow, the user logs in via Persona, enters a PIN, and is presented with details about the item to be purchased.
-</li><li> The user confirms the purchase or cancels it.
-</li><li> If the user cancels or something goes wrong with the payment process, the flow returns to the <code>DOMRequest.onerror</code> callback.
-</li></ul>
-<h3> <span id="Notifications"> Notifications </span></h3>
-<p>The Application must only rely on server side notifications to determine the outcome of a purchase. The Payment Provider will POST a confirmation message (a JWT) to the <strong>postbackURL</strong> (on success) or the <strong>chargebackURL</strong> (on error). The Application provides these URLs in the original JWT request. On a production server, these URLs must be HTTPS. 
-</p><p>The POST request will have a content-type of <code>application/x-www-form-urlencoded</code> and the JWT will be in the <strong>notice</strong> form parameter. This JWT contains a copy of the original payment request plus a new response object that has a <strong>transactionID</strong> which identifies the Payment Provider's transaction.
-</p><p>When a JWT is received, the Application first needs to verify the signature using its Application Secret. If the signature is not valid, it probably was not sent from the Payment Provider and should be ignored. If the signtature is valid, then the application server should decode the JWT, record it, and <strong>respond with a 200 OK that contains the transactionID in plain text</strong>. If the Application server responds with an error status or does not respond with the right transactionID, the Payment Provider will consider this a failure. It will retry and/or notify the Developer about the failure. The Application must respond to the request in plain text containing just the <strong>transactionID</strong> value.
-</p>
-<h4> <span id="Postback"> Postback </span></h4>
-<p>Here is an example of a JWT POSTed via the <strong>notice</strong> parameter to <strong>postbackURL</strong> that indicates a transaction was fully processed and was successful:
-</p><p><code>
-</p>
-<pre> {
+      <p>
+For a user to make a purchase, the Application must execute the Javascript 
+method <code>navigator.payment()</code> with one or more signed payment 
+requests (the JWTs). For example, the app might have a 'buy' button that 
+triggers this method when clicked. Then <code>navigator.payment()</code> method 
+should take the signed payment JWT or an array of them. It will return a 
+<a href="https://developer.mozilla.org/en/DOM/DOMRequest">DOMRequest</a> object 
+that the developer can use to monitor the progress of the operation.
+      </p>
+
+      <pre class="example" title="Initiating a payment via the navigator.payment() method"> 
+var request = navigator.payment([signedJWT1, signedJWTn]);
+
+request.onsuccess = function () {
+  // The payment buy flow completed without errors.
+  // This does NOT mean the payment was successful.
+  waitForServerPostback();
+}
+
+request.onerror = function (errorMsg) {
+  console.log('navigator.payment() error: ' + this.error.name + ': ' + errorMsg);
+}
+      </pre>
+
+      <ol>
+        <li>
+The <code>navigator.payment</code> method will open a payment request 
+confirmation screen based on the received JWTs, so the user can confirm and 
+choose the payment method that is more appropriate for him. B2G would only 
+show the payment providers for the JWT <strong>typ</strong> values that are 
+pre-registered in the User Agent. JWTs containing a <strong>typ</strong> 
+value not registered in the UA would be considered as invalid.
+        </li>
+        <li> 
+Once the user selects a Payment Provider the UA will open a special window 
+(a "chrome" dialog) containing the Payment Provider's buy flow that is 
+registered in the User Agent for the <strong>typ</strong> value of the 
+passed JWT (e.g. Firefox Marketplace in the example above).
+        </li>
+        <li> 
+Why an array of JWTs? The Developer will have a specific contract with 
+each Payment Provider and will have a unique Application Secret for each 
+provider. When a payment is initiated, the Application must send all JWTs. 
+The user will select only one Payment Provider to complete the purchase. If 
+there is only one JWT to choose from, the user will automatically use that 
+Payment Provider, and this is the case for the first version of B2G.
+        </li>
+        <li> 
+The details of the exact buy flow are implemented by the 
+<tref>Payment Provider</tref>. In Mozilla's pay flow, the user logs in via 
+Persona, enters a PIN, and is presented with details about the item to be 
+purchased.
+        </li>
+        <li> 
+The user confirms the purchase or cancels it.
+        </li>
+        <li> 
+If the user cancels or something goes wrong with the payment process, the 
+flow returns to the <code>DOMRequest.onerror</code> callback.
+        </li>
+      </ol>
+    </section>
+    
+    <section>
+      <h3>Notifications</h3>
+      <p>
+The Application must only rely on server side notifications to determine the 
+outcome of a purchase. The Payment Provider will POST a confirmation message 
+(a JWT) to the <strong>postbackURL</strong> (on success) or the 
+<strong>chargebackURL</strong> (on error). The Application provides these 
+URLs in the original JWT request. On a production server, these URLs must 
+be HTTPS. 
+      </p>
+      <p>
+The POST request will have a content-type of 
+<code>application/x-www-form-urlencoded</code> and the JWT will be in the 
+<strong>notice</strong> form parameter. This JWT contains a copy of the 
+original payment request plus a new response object that has a 
+<strong>transactionID</strong> which identifies the Payment Provider's 
+transaction.
+      </p>
+      <p>
+When a JWT is received, the Application first needs to verify the signature 
+using its Application Secret. If the signature is not valid, it probably was 
+not sent from the Payment Provider and should be ignored. If the signtature 
+is valid, then the application server should decode the JWT, record it, and 
+<strong>respond with a 200 OK that contains the transactionID in plain 
+text</strong>. If the Application server responds with an error status or 
+does not respond with the right transactionID, the Payment Provider will 
+consider this a failure. It will retry and/or notify the Developer about the 
+failure. The Application must respond to the request in plain text containing 
+just the <strong>transactionID</strong> value.
+      </p>
+      
+      <section>
+        <h4>Postback</h4>
+        <p>
+Here is an example of a JWT POSTed via the <strong>notice</strong> parameter 
+to <strong>postbackURL</strong> that indicates a transaction was fully 
+processed and was successful:
+        </p>
+        <pre class="example" title="Postback example"> 
+{
    "iss": "marketplace.firefox.com",
    "aud": APPLICATION_KEY,
    "typ": "mozilla/payments/pay/postback/v1",
@@ -440,88 +511,122 @@ whenever a refund associated with this transaction is done.
      "name": "Magical Unicorn",
      "description": "Adventure Game item",
      "productData": "user_id=1234&amp;my_session_id=XYZ",
-     "postbackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/postback">https://yourapp.com/payments/postback</a>",
-     "chargebackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/chargeback">https://yourapp.com/payments/chargeback</a>"
+     "postbackURL": "https://yourapp.com/payments/postback",
+     "chargebackURL": "https://yourapp.com/payments/chargeback"
    },
    "response": {
      "transactionID": "webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9"
    }
  }
-</pre>
-<p></code>
-</p><p>Here is an example response that includes just the transactionID:
-</p>
-<pre> <code>
- HTTP/1.1 200 OK
- Content-Type: text/plain
- 
- webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
- </code>
-</pre>
-<h4> <span id="Chargeback"> Chargeback </span></h4>
-<p>Here is an example of a JWT POSTed via the <strong>notice</strong> parameter to <strong>chargebackURL</strong> that indicates a transaction was fully processed but was unsuccessful:
-</p><p><code>
-</p>
-<pre> {
-   "iss": "marketplace.firefox.com",
-   "aud": APPLICATION_KEY,
-   "typ": "mozilla/payments/pay/chargeback/v1",
-   "exp": 1337370900,
-   "iat": 1337360900,
-   "request": {
-     "id": "915c07fc-87df-46e5-9513-45cb6e504e39",
-     "pricePoint": 1,
-     "name": "Magical Unicorn",
-     "description": "Adventure Game item",
-     "productData": "user_id=1234&amp;my_session_id=XYZ",
-     "postbackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/postback">https://yourapp.com/payments/postback</a>",
-     "chargebackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/chargeback">https://yourapp.com/payments/chargeback</a>"
-   },
-   "response": {
-     "transactionID": "webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9",
-     "reason": "refund"
-   }
- }
-</pre>
-<p></code>
-</p><p>A chargeback JWT might be received instead of or in addition to a postback. The response will contain a <strong>reason</strong> attribute, as follows:
-</p>
-<dl><dt> refund</dt><dd> The payment was refunded either upon request of the customer or by an administrator.
-</dd><dt> reversal</dt><dd> A buyer has asked the credit card issuer to reverse a transaction after it has been completed. The buyer might do this through the credit card company as part of a dispute.
-</dd></dl>
-<p>Here is an example response that includes just the transactionID:
-</p>
-<pre> <code>
- HTTP/1.1 200 OK
- Content-Type: text/plain
- 
- webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
- </code>
-</pre>
-<h2> <span id="Refunds"> Refunds </span></h2>
-<p>Refunds are not yet supported by the <code>navigator.mozPay</code> API. <strong>At a future date, an Application may be able to request a refund like this</strong>:
-</p><p><code>
-</p>
-<pre> {
-   "iss": APPLICATION_KEY,
-   "aud": "marketplace.firefox.com",
-   "typ": "mozilla/payments/refund/v1",
-   "exp": 1337370900,
-   "iat": 1337360900,
-   "request": {
-     "transactionID": "webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9",
-     "reason": "User requested refund",
-     "chargebackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/chargeback">https://yourapp.com/payments/chargeback</a>"
-   }
- }
-</pre>
-<p></code>
-</p><p>This would initiate a refund flow and POST a confirmation JWT when completed.
-</p>
-<h1> <span id="Payment_Provider_facing_API"> Payment Provider facing API </span></h1>
-<p>See the <a href="/WebAPI/WebPaymentProvider" title="WebAPI/WebPaymentProvider">WebPaymentProvider</a> spec for details on how to implement a payment provider for <code>navigator.mozPay()</code>.
-</p>
+        </pre>
+        <p>Here is an example response that includes just the transactionID:
 
+        <pre class="example" title="HTTP Response for postback example">
+HTTP/1.1 200 OK
+Content-Type: text/plain
+ 
+webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
+        </pre>
+      </section>
+      <section>
+        <h4>Chargeback</h4>
+        <p>
+Here is an example of a JWT POSTed via the <strong>notice</strong> parameter 
+to <strong>chargebackURL</strong> that indicates a transaction was fully
+processed but was unsuccessful:
+        </p>
+        <pre class="example" title="Chargeback example"> 
+{
+  "iss": "marketplace.firefox.com",
+  "aud": APPLICATION_KEY,
+  "typ": "mozilla/payments/pay/chargeback/v1",
+  "exp": 1337370900,
+  "iat": 1337360900,
+  "request": {
+    "id": "915c07fc-87df-46e5-9513-45cb6e504e39",
+    "pricePoint": 1,
+    "name": "Magical Unicorn",
+    "description": "Adventure Game item",
+    "productData": "user_id=1234&amp;my_session_id=XYZ",
+    "postbackURL": "https://yourapp.com/payments/postback",
+    "chargebackURL": "https://yourapp.com/payments/chargeback"
+  },
+  "response": {
+    "transactionID": "webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9",
+    "reason": "refund"
+  }
+}
+        </pre>
+        
+        <p>
+A chargeback JWT might be received instead of or in addition to a postback. 
+The response will contain a <strong>reason</strong> attribute, as follows:
+        </p>
+        
+        <dl>
+          <dt>refund</dt>
+          <dd> 
+The payment was refunded either upon request of the customer or by an 
+administrator.
+          </dd>
+          <dt>reversal</dt>
+          <dd>
+A buyer has asked the credit card issuer to reverse a transaction after it 
+has been completed. The buyer might do this through the credit card company 
+as part of a dispute.
+          </dd>
+        </dl>
+        
+        <p>
+Here is an example response that includes just the transactionID:
+        </p>
+        
+        <pre class="example" title="HTTP response for chargeback example">
+HTTP/1.1 200 OK
+Content-Type: text/plain
+ 
+webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
+        </pre>
+      </section>
+    
+      <section>
+        <h4>Refunds</h4>
+        <p>
+Refunds are not yet supported by the <code>navigator.payment()</code> API. 
+<strong>At a future date, an Application may be able to request a refund 
+like this</strong>:
+        </p>
+        <pre class="example" title="Refund example">
+{
+  "iss": APPLICATION_KEY,
+  "aud": "marketplace.firefox.com",
+  "typ": "mozilla/payments/refund/v1",
+  "exp": 1337370900,
+  "iat": 1337360900,
+  "request": {
+    "transactionID": "webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9",
+    "reason": "User requested refund",
+    "chargebackURL": "https://yourapp.com/payments/chargeback"
+  }
+}
+        </pre>
+        <p>
+This would initiate a refund flow and POST a confirmation JWT when completed.
+        </p>
+      </section>
+    </section>
+  </section>
+</section>
+
+<section>
+  <h1>Payment Provider facing API</h1>
+  <p class="issue">
+Figure out how to reference the
+<a href="/WebAPI/WebPaymentProvider" title="WebAPI/WebPaymentProvider">WebPaymentProvider</a> 
+spec for details on how to implement a payment provider for 
+<code>navigator.payment()</code>. It may be that we need to fold that into this
+spec.
+  </p>
 </section>
 
 <section>
