@@ -472,8 +472,7 @@ The Application must only rely on server side notifications to determine the
 outcome of a purchase. The Payment Provider will POST a confirmation message
 (a JWT) to the <strong>postbackURL</strong> (on success) or the
 <strong>chargebackURL</strong> (on error). The Application provides these
-URLs in the original JWT request. On a production server, these URLs must
-be HTTPS.
+URLs in the original JWT request.
       </p>
       <p>
 The POST request will have a content-type of
