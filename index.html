@@ -321,6 +321,10 @@ paymentJWT = jwt.encode({
      "pricePoint": 1,
      "name": "Magical Unicorn",
      "description": "Adventure Game item",
+     "icons": {
+       "64": "https://yourapp.com/img/icon-64.png",
+       "128": "https://yourapp.com/img/icon-128.png"
+     },
      "productData": "user_id=1234&amp;my_session_id=XYZ",
      "postbackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/postback">https://yourapp.com/payments/postback</a>",
      "chargebackURL": "<a rel="nofollow" class="external free" href="https://yourapp.com/payments/chargeback">https://yourapp.com/payments/chargeback</a>"
@@ -359,6 +363,12 @@ be processed.
         <dt>request (mandatory)</dt>
         <dd>
           <dl>
+            <dt>id (mandatory)</dt>
+            <dd>
+A unique identifier for the product you are selling. This only needs
+to be unique within your own catalog, not unique among all products from all
+apps.
+            </dd>
             <dt>pricePoint (mandatory)</dt>
             <dd>
 An identifier that corresponds to a price according to the Payment Provider.
@@ -374,11 +384,11 @@ A short description of the product.
             <dd>
 A long description of the product.
             </dd>
-            <dt>id (mandatory)</dt>
+            <dt>icons (optional)</dt>
             <dd>
-A unique identifier for the product you are selling. This only needs
-to be unique within your own catalog, not unique among all products from all
-apps.
+ A map of icon URLs for the product you are selling. The keys are
+ width/height pixel values (images must be square). The Payment Provider
+ will use an image at the appropriate size on the payment confirmation page.
             </dd>
             <dt>productData (optional)</dt>
             <dd>
@@ -514,6 +524,10 @@ processed and was successful:
      "pricePoint": 1,
      "name": "Magical Unicorn",
      "description": "Adventure Game item",
+     "icons": {
+       "64": "https://yourapp.com/img/icon-64.png",
+       "128": "https://yourapp.com/img/icon-128.png"
+     },
      "productData": "user_id=1234&amp;my_session_id=XYZ",
      "postbackURL": "https://yourapp.com/payments/postback",
      "chargebackURL": "https://yourapp.com/payments/chargeback"
@@ -551,6 +565,10 @@ processed but was unsuccessful:
     "pricePoint": 1,
     "name": "Magical Unicorn",
     "description": "Adventure Game item",
+     "icons": {
+       "64": "https://yourapp.com/img/icon-64.png",
+       "128": "https://yourapp.com/img/icon-128.png"
+     },
     "productData": "user_id=1234&amp;my_session_id=XYZ",
     "postbackURL": "https://yourapp.com/payments/postback",
     "chargebackURL": "https://yourapp.com/payments/chargeback"
@@ -636,7 +654,7 @@ spec.
 <section>
   <h2>The Application Programming Interface</h2>
 
-  <p>This API provides a clean mechanism that enables developers to 
+  <p>This API provides a clean mechanism that enables developers to
     initiate payments in a Web Agent. A conformant Payment Initator
     MUST implement the entirety of the following API.</p>
 
