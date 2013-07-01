@@ -129,7 +129,7 @@
   <p>
 This API enables Web content to initiate payment or issue a refund for a
 product or service. Once implemented in the browser, an author may issue
-<code>navigator.payment()</code> function to initiate a payment.
+<code>navigator.transact.pay()</code> function to initiate a payment.
   </p>
   <section class="informative">
     <h2>How to Read this Document</h2>
@@ -153,7 +153,7 @@ product or service. Once implemented in the browser, an author may issue
  <p>
 An open web app will interact with a
 <a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>
-via <code>navigator.payment()</code> and receive notifications POSTed to its
+via <code>navigator.transact.pay()</code> and receive notifications POSTed to its
 server about the result of each payment. Users will see a payment flow hosted
 by the Payment Provider in a special window on the device.
  </p>
@@ -163,7 +163,7 @@ by the Payment Provider in a special window on the device.
     <ul>
       <li>
 The app initiates a payment by signing a JSON Web Token [[!JWT]] request
-and calling <code>navigator.payment()</code>.
+and calling <code>navigator.transact.pay()</code>.
       </li>
       <li>
 This starts the buyflow in a content iframe inside a trusted dialog
@@ -207,7 +207,7 @@ successfully (or it failed).
         <dt><tdef>Application</tdef></dt>
         <dd>
 Open Web App which offers digital goods to be sold. OWAs charge users
-via <code>navigator.payment()</code> and require a client and server.
+via <code>navigator.transact.pay()</code> and require a client and server.
         </dd>
         <dt><tdef>Application Key</tdef></dt>
         <dd>
@@ -228,13 +228,13 @@ Application developer, seller of digital goods.
         <dd>
 Developer portal and application repository. Developers can submit apps to
 the Marketplace so users can purchase and download the apps. The Marketplace
-uses the <code>navigator.payment()</code> function to charge users for
+uses the <code>navigator.transact.pay()</code> function to charge users for
 application purchases.
         </dd>
         <dt><tdef>Payment Provider</tdef></dt>
         <dd>
 A client/server web application that serves content in a special iframe
-controlled by <code>navigator.payment()</code>. This conforms to
+controlled by <code>navigator.transact.pay()</code>. This conforms to
 the
 <a href="https://wiki.mozilla.org/WebAPI/WebPaymentProvider">Payment Provider</a>
 spec. The provider accepts payment from a user and disperses income to the Developer.
@@ -255,7 +255,7 @@ phone operating system, or similar software system.
       <h3>Sign-in</h3>
       <p>
 This is an implementation detail of the <tref>Payment Provider</tref>.
-The <code>navigator.payment()</code> API does not prescribe any user
+The <code>navigator.transact.pay()</code> API does not prescribe any user
 authorization scheme.
       </p>
       <p class="issue">
@@ -267,7 +267,7 @@ Specify user identity management, e.g. <a href="https://login.persona.org/">Pers
       <h3>Developer Registration</h3>
       <p>
 This is an implementation detail of the <tref>Payment Provider</tref>.
-The <code>navigator.payment()</code> API facilities two parties in making a
+The <code>navigator.transact.pay()</code> API facilities two parties in making a
 transaction: 1) a Developer and 2) a Payment Provider.  It does not
 facilitate any part of the registration process.
       </p>
@@ -305,7 +305,7 @@ details about the product such as name, description, price, etc.
         </li>
         <li>
 The <tref>Application</tref> bubbles up the JWT to the client and calls
-<code>navigator.payment([theJWT])</code>. This begins the hosted buy flow
+<code>navigator.transact.pay([theJWT])</code>. This begins the hosted buy flow
 within a special window on the <tref>User Agent</tref>.
         </li>
       </ol>
@@ -403,16 +403,16 @@ whenever a refund associated with this transaction is done.
 
       <p>
 For a user to make a purchase, the Application must execute the Javascript
-method <code>navigator.payment()</code> with one or more signed payment
+method <code>navigator.transact.pay()</code> with one or more signed payment
 requests (the JWTs). For example, the app might have a 'buy' button that
-triggers this method when clicked. Then <code>navigator.payment()</code> method
+triggers this method when clicked. Then <code>navigator.transact.pay()</code> method
 should take the signed payment JWT or an array of them. It will return a
 <a href="https://developer.mozilla.org/en/DOM/DOMRequest">DOMRequest</a> object
 that the developer can use to monitor the progress of the operation.
       </p>
 
-      <pre class="example" title="Initiating a payment via the navigator.payment() method">
-var request = navigator.payment([signedJWT1, signedJWTn]);
+      <pre class="example" title="Initiating a payment via the navigator.transact.pay() method">
+var request = navigator.transact.pay([signedJWT1, signedJWTn]);
 
 request.onsuccess = function () {
   // The payment buy flow completed without errors.
@@ -421,13 +421,13 @@ request.onsuccess = function () {
 }
 
 request.onerror = function (errorMsg) {
-  console.log('navigator.payment() error: ' + this.error.name + ': ' + errorMsg);
+  console.log('navigator.transact.pay() error: ' + this.error.name + ': ' + errorMsg);
 }
       </pre>
 
       <ol>
         <li>
-The <code>navigator.payment</code> method will open a payment request
+The <code>navigator.transact.pay</code> method will open a payment request
 confirmation screen based on the received JWTs, so the user can confirm and
 choose the payment method that is more appropriate for him.
 The User Agent would only
@@ -596,7 +596,7 @@ webpay:84294ec6-7352-4dc7-90fd-3d3dd36377e9
       <section>
         <h4>Refunds</h4>
         <p>
-Refunds are not yet supported by the <code>navigator.payment()</code> API.
+Refunds are not yet supported by the <code>navigator.transact.pay()</code> API.
 <strong>At a future date, an Application may be able to request a refund
 like this</strong>:
         </p>
@@ -628,7 +628,7 @@ This would initiate a refund flow and POST a confirmation JWT when completed.
 Figure out how to reference the
 <a href="/WebAPI/WebPaymentProvider" title="WebAPI/WebPaymentProvider">WebPaymentProvider</a>
 spec for details on how to implement a payment provider for
-<code>navigator.payment()</code>. It may be that we need to fold that into this
+<code>navigator.transact.pay()</code>. It may be that we need to fold that into this
 spec.
   </p>
 </section>
@@ -641,13 +641,14 @@ spec.
     MUST implement the entirety of the following API.</p>
 
   <section>
-    <h3>NavigatorPayment</h3>
+    <h3>NavigatorTransactions</h3>
 
-    <p>Navigator Payment is the high-level programming interface that Web
-      developers use to initiate payments.</p>
+    <p>Navigator Transactions is the name of the high-level programming 
+      interface that Web developers use to initiate payments. If MUST be
+      made available via the <code>navigator.transact</code> object.</p>
 
-    <dl title="interface NavigatorPayment" class="idl">
-      <dt>DOMRequest payment()</dt>
+    <dl title="interface NavigatorTransactions" class="idl">
+      <dt>DOMRequest pay()</dt>
       <dd>
         Initiates a payment or refund given an array of JSON Web Tokens [[!JWT]]
         describing the types of actions to perform.
@@ -656,6 +657,89 @@ spec.
           <dt>object[] requests</dt>
           <dd>An array of JSON Web Tokens [[!JWT]] describing the type
           of payment operations to perform.</dd>
+        </dl>
+      </dd>
+      <dt>DOMRequest registerProvider()</dt>
+      <dd>
+        <p>
+Registers a payment provider with the browser such that future 
+transactions may provide an interface to the user to select 
+which payment provider that they would like to use to complete a
+transaction.
+        </p> 
+        <p>
+Registering a payment provider can alter the choices given to the User when a
+transaction is processed. In the worst case, an attacker could register a fake 
+payment provider that collects all of the User's credit card or banking details. 
+In order to ensure that the User is protected from this sort of attack, the 
+User Agent MUST provide a special interface that is not easily spoofed by 
+an attacker.
+        </p>
+
+        <p class="issue">
+We may want to place a number of restrictions on sites
+doing the registration, such as: 1) The call must be done on a page served over
+TLS and with no scripts loaded from a non-secure channel. 2) The domain for the
+<code>id</code> and <code>services</code> URLs must match the domain 
+for the page requesting the registration, etc.
+        </p>
+
+        <dl class="parameters">
+          <dt>object provider</dt>
+          <dd>An object consisting of the following keys and values:
+            <dl style="margin-left: 1em;">
+              <dt><code>id</code> (optional)<dt>
+              <dd>A URL identifier for the provider.</dd>
+              <dt><code>type</code><dt>
+              <dd>
+                <p>
+The type of payments supported by the payment provider. Valid values include:
+<code>MozPay</code>, <code>CreditCard</code>, <code>ACH</code>, 
+<code>PayPal</code>, <code>AmazonPayments</code>, 
+<code>GoogleWallet</code>, <code>PaySwarm</code>.
+                </p>
+                <p class="issue">
+Most of these types don't make sense as they're not
+interoperable with any other system and don't have a protocol for notifying
+sites that a payment has been made successfully. We may just want to make
+this a free-form string and let payment providers and merchants settle on
+interoperable values.
+                </p>
+              </dd>
+              <dt><code>services</code> (optional)<dt>
+              <dd>
+A URL that can be used to determine more information about the payment provider
+Web service endpoints by the User Agent or Merchant.
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </dd>
+      <dt>DOMRequest getProviders()</dt>
+      <dd>
+        <p>
+Retrieves all of the payment providers that are registered with the User Agent 
+that match the query criteria given and were authorized to be included in
+the response by the User.
+        </p>
+        <p>
+It is not always preferable for a User to have all of their payment providers
+exposed to a Merchant. In the worst case, an attacker can use this information
+to execute spear-fishing attacks against the User. The User Agent should 
+provide the User with an interface that allows them to select which providers 
+they want to expose to the merchant. In many cases, the User will only want to
+expose one, which will make the purchase process proceed more fluidly. 
+        </p>
+        <p>
+The result will be an array of payment providers that are in the same format
+as the objects passed to the <code>registerProvider()</code> method.
+        </p>
+      
+        <dl class="parameters">
+          <dt>string[] query</dt>
+          <dd>
+An array of payment provider types that are supported by the merchant.
+          </dd>
         </dl>
       </dd>
     </dl>
