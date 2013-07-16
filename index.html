@@ -95,7 +95,12 @@
 
 <body>
 <section id="abstract">
-  <p></p>
+  <p>
+The freedom to transact and exchange value has become an important cornerstone
+of the Web. This specification outlines several browser-based mechanisms that 
+make financial transactions easier to initiate while also making them 
+more secure.
+  </p>
 </section>
 
 <section id="sotd">
@@ -345,7 +350,8 @@ during the app registration process for this specific payment provider
         <dd>
 The JWT type. This identifies the payment provider, e.g.
 Marketplace, and the JWT version that must be supported by the provider.
-On the User Agent, typ is used to look up white-listed Payment Providers.
+On the <tref>User Agent</tref>, 
+typ is used to look up white-listed Payment Providers.
         </dd>
         <dt>iat (mandatory)</dt>
         <dd>
@@ -398,13 +404,13 @@ is sent back to the app.
             </dd>
             <dt>postbackURL (mandatory)</dt>
             <dd>
-URL where the payment processor sends an HTTP POST message to
+URL where the payment provider sends an HTTP POST message to
 whenever a purchase completes. The application server needs to acknowledge
 these POST messages, or else the transactions will be canceled.
             </dd>
             <dt>chargebackURL (mandatory)</dt>
             <dd>
-URL where the payment processor sends an HTTP POST message to
+URL where the payment provider sends an HTTP POST message to
 whenever a refund associated with this transaction is done.
             </dd>
           </dl>
@@ -440,16 +446,17 @@ request.onerror = function (errorMsg) {
 The <code>navigator.transact.pay</code> method will open a payment request
 confirmation screen based on the received JWTs, so the user can confirm and
 choose the payment method that is more appropriate for him.
-The User Agent would only
+The <tref>User Agent</tref> would only
 show the payment providers for the JWT <strong>typ</strong> values that are
-pre-registered in the User Agent. JWTs containing a <strong>typ</strong>
+pre-registered in the <tref>User Agent</tref>. 
+JWTs containing a <strong>typ</strong>
 value not registered in the UA would be considered as invalid.
         </li>
         <li>
 Once the user selects a Payment Provider the UA will open a special window
 (a "chrome" dialog) containing the Payment Provider's buy flow that is
-registered in the User Agent for the <strong>typ</strong> value of the
-passed JWT.
+registered in the <tref>User Agent</tref> for the <strong>typ</strong> 
+value of the passed JWT.
         </li>
         <li>
 Why an array of JWTs? The Developer will have a specific contract with
@@ -654,9 +661,10 @@ spec.
 <section>
   <h2>The Application Programming Interface</h2>
 
-  <p>This API provides a clean mechanism that enables developers to
-    initiate payments in a Web Agent. A conformant Payment Initator
-    MUST implement the entirety of the following API.</p>
+  <p>This API provides a clean mechanism that enables developers to 
+    initiate payments in a <tref>User Agent</tref>. 
+    A conformant Payment Initator MUST implement the entirety of the 
+    following API.</p>
 
   <section>
     <h3>NavigatorTransactions</h3>
@@ -668,9 +676,35 @@ spec.
     <dl title="interface NavigatorTransactions" class="idl">
       <dt>DOMRequest pay()</dt>
       <dd>
-        Initiates a payment or refund given an array of JSON Web Tokens [[!JWT]]
-        describing the types of actions to perform.
-
+        <p>
+Initiates a payment or refund given an array of JSON Web Tokens [[!JWT]]
+describing the types of actions to perform.
+        </p>
+        <p class="issue">
+Should we break refunds out into their own method call? The downside of doing
+that is that the API is no longer fairly generic. However, .pay() doesn't
+really imply "refund", unless you think of a refund like a reverse payment?
+The other thing we could do is use .process() or .transact() as the method
+call and change the interface name to something like 
+navigator.funds.transact() or navigator.wallet.transact().
+        </p>
+        <p>
+Each request object will contain a <code>typ</code> key. The value associated
+with this key will be used to perform matchmaking between the customer's list 
+of registered payment providers and the list of preferred payment providers 
+for the Merchant. Typically, a <tref>User Agent</tref> will 
+request that the customer rank their registered payment providers in most 
+preferable to least preferable order. If this ranking is performed, 
+a payment provider can be selected automatically by picking highest ranked
+payment provider in the customer's payment provider list with a payment 
+provider that also exists in the Merchant's payment provider list. 
+        </p>
+        <p class="issue">
+Should the merchant provide a payment provider registration link as an 
+option to the call in the case where there is no match between the list of
+payment providers accepted by the merchant vs. the list of registered
+providers for the customer?
+        </p>
         <dl class="parameters">
           <dt>object[] requests</dt>
           <dd>An array of JSON Web Tokens [[!JWT]] describing the type
@@ -693,35 +727,54 @@ In order to ensure that the User is protected from this sort of attack, the
 User Agent MUST provide a special interface that is not easily spoofed by 
 an attacker.
         </p>
-
-        <p class="issue">
-We may want to place a number of restrictions on sites
-doing the registration, such as: 1) The call must be done on a page served over
-TLS and with no scripts loaded from a non-secure channel. 2) The domain for the
-<code>id</code> and <code>services</code> URLs must match the domain 
-for the page requesting the registration, etc.
+        <p>
+When a <tref>User Agent</tref> executes this method, it must ensure that the
+following checks are performed:
         </p>
+        
+        <ol>
+          <li>
+The call must be done on a page served over TLS and with no scripts loaded 
+from a non-secure channel.
+          </li>
+          <li>
+The domain for the <code>id</code> and <code>services</code> URLs must match 
+the domain for the page requesting the registration, etc.
+          </li>
+        
+        </ol>
 
         <dl class="parameters">
           <dt>object provider</dt>
           <dd>An object consisting of the following keys and values:
             <dl style="margin-left: 1em;">
-              <dt><code>id</code> (optional)<dt>
-              <dd>A URL identifier for the provider.</dd>
-              <dt><code>type</code><dt>
+              <dt><code>id</code><dt>
+              <dd>
+A URL identifier for the provider. This URL should be the base domain for the
+payment provider, for example: <code>https://example.org/</code>. Ideally, 
+this URL could be modified by appending a relative path, such as .well-known/
+to discover more services related to the payment provider. 
+              </dd>
+              <dt><code>name</code> (optional)<dt>
+              <dd>
+A display name for the provider. If one is not provided, the domain name
+of the <code>id</code> SHOULD be used.
+              </dd>
+              <dt><code>icon</code> (optional)<dt>
+              <dd>
+A display icon for the provider. If one is not provided, the favicon.ico file
+associated with the <code>id</code> SHOULD be used.
+              </dd>
+              <dt><code>transactionType</code><dt>
               <dd>
                 <p>
-The type of payments supported by the payment provider. Valid values include:
-<code>MozPay</code>, <code>CreditCard</code>, <code>ACH</code>, 
-<code>PayPal</code>, <code>AmazonPayments</code>, 
-<code>GoogleWallet</code>, <code>PaySwarm</code>.
-                </p>
-                <p class="issue">
-Most of these types don't make sense as they're not
-interoperable with any other system and don't have a protocol for notifying
-sites that a payment has been made successfully. We may just want to make
-this a free-form string and let payment providers and merchants settle on
-interoperable values.
+A free-form string, or array of strings, advertising the type of transactions 
+supported by the payment provider. Other specifications, such as 
+[[WEB-PAYMENTS]], outline the acceptable values for this parameter. This
+parameter is used by the <code>pay()</code> method to determine which 
+registered payment provider is capable of processing a particular
+transaction type (for example: credit cards, mobile phone carrier-based billing, 
+or PaySwarm).
                 </p>
               </dd>
               <dt><code>services</code> (optional)<dt>

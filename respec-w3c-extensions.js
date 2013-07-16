@@ -10,6 +10,7 @@ var localBibliography = {
     "RFC6906": "Erik Wilde. <cite><a href=\"http://www.ietf.org/rfc/rfc6906.txt\">The 'profile' Link Relation Type</a>.</cite> March 2013. Internet RFC 6906. URL: <a href=\"http://www.ietf.org/rfc/rfc6906.txt\">http://www.ietf.org/rfc/rfc6906.txt</a>",
     "TURTLE": "Eric Prud'hommeaux, Gavin Carothers, Editors. <cite><a href=\"http://www.w3.org/TR/2013/CR-turtle-20130219/\">Turtle: Terse RDF Triple Language.</a></cite> 19 February 2013. W3C Candidate Recommendation (work in progress). URL: <a href=\"http://www.w3.org/TR/2013/CR-turtle-20130219/\">http://www.w3.org/TR/2013/CR-turtle-20130219/</a>. The latest edition is available at <a href=\"http://www.w3.org/TR/turtle/\">http://www.w3.org/TR/turtle/</a>",
     "WEBIDL": "Cameron McCormack, Editor. <cite><a href=\"http://www.w3.org/TR/2012/CR-WebIDL-20120419/\">Web IDL.</a></cite> 19 April 2012. W3C Candidate Recommendation (work in progress). URL: <a href=\"http://www.w3.org/TR/2012/CR-WebIDL-20120419/\">http://www.w3.org/TR/2012/CR-WebIDL-20120419/</a>. The latest edition is available at <a href=\"http://www.w3.org/TR/WebIDL/\">http://www.w3.org/TR/WebIDL/</a>",
+    "WEB-PAYMENTS": "Manu Sporny, Editor. <cite><a href=\"https://payswarm.com/specs/source/web-payments/\">Web Payments 1.0</a>.</cite> W3C Editor's Draft (work in progress). URL: <a href=\"https://payswarm.com/specs/source/web-payments/\">https://payswarm.com/specs/source/web-payments/</a>",
     "JWT": {
       "authors": [
           "Michael B. Jones"
